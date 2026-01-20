@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Share Flex Message Ready</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family:sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    background:#eef2ff;
+}
+.msg{
+    display:none;
+    padding:20px 30px;
+    background:white;
+    border-radius:16px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    font-size:18px;
+    text-align:center;
+}
+#errorMsg{
+    color:#d9534f;
+    max-width:80vw;
+    word-break:break-word;
+}
+</style>
+</head>
+
+<body>
+
+<div class="msg" id="loadingMsg">⏳ กำลังเริ่มต้น LIFF และเตรียมการแชร์...</div>
+<div class="msg" id="successMsg">✅ แชร์ให้เพื่อน ๆ สำเร็จแล้ว</div>
+<div class="msg" id="errorMsg">❌ เกิดข้อผิดพลาดในการแชร์</div>
+
+<script>
+// ================= Flex Message =================
+const flexMessage = {
+  type: "flex",
+  altText: "📚 แนะนำหนังสือน่าอ่าน โดย นตท.ชั้นปีที่ 2",
+  contents: {
+    type: "carousel",
+    contents: [
+
+      {
+        type: "bubble",
+        hero: {
+          type: "image",
+          url: "https://yawning-indigo-rfd83xjgqr.edgeone.app/IMG_20260120_191546_429.jpg",
+          size: "full",
+          aspectRatio: "20:13",
+          aspectMode: "cover"
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            { type: "text", text: "แนะนำหนังสือ", weight: "bold", size: "xl" }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "button",
+              style: "link",
+              action: {
+                type: "uri",
+                label: "แชร์",
+                uri: "https://youtube.com/shorts/-rZJfy7zaf0"
+              }
+            }
+          ]
+        }
+      },
+
+      {
+        type: "bubble",
+        hero: {
+          type: "image",
+          url: "https://image2url.com/r2/default/images/1768921512701-e3fea66f-a5ea-4802-84a1-381c2ccddd3a.jpg",
+          size: "full",
+          aspectRatio: "20:13",
+          aspectMode: "cover"
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            { type: "text", text: "คู่มือ Coding Python", weight: "bold", size: "lg" },
+            { type: "text", text: "เล่มที่ 1", size: "sm", color: "#666666" }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "button",
+              style: "link",
+              action: {
+                type: "uri",
+                label: "อ่านเพิ่มเติม",
+                uri: "https://youtube.com/shorts/B749Yq9WQi4"
+              }
+            }
+          ]
+        }
+      },
+
+      {
+        type: "bubble",
+        hero: {
+          type: "image",
+          url: "https://image2url.com/r2/default/images/1768921563456-2f15629d-3e95-4a6d-9837-f48ccdb006cb.jpg",
+          size: "full",
+          aspectRatio: "20:13",
+          aspectMode: "cover"
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            { type: "text", text: "พูดภาษาอังกฤษฉบับสมบูรณ์", weight: "bold", size: "lg" },
+            { type: "text", text: "เล่มที่ 2", size: "sm", color: "#666666" }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "button",
+              style: "link",
+              action: {
+                type: "uri",
+                label: "ดูหนังสือ",
+                uri: "https://youtube.com/shorts/QdV_ueSxEzo"
+              }
+            }
+          ]
+        }
+      },
+
+      {
+        type: "bubble",
+        hero: {
+          type: "image",
+          url: "https://image2url.com/r2/default/images/1768921705671-4e700a1c-ac89-4a70-bbe6-32e99ca2ca96.jpg",
+          size: "full",
+          aspectRatio: "20:13",
+          aspectMode: "cover"
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            { type: "text", text: "ภาษาอังกฤษที่ไหนก็เอาอยู่", weight: "bold", size: "lg" },
+            { type: "text", text: "เล่มที่ 3", size: "sm", color: "#666666" }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "button",
+              style: "link",
+              action: {
+                type: "uri",
+                label: "รายละเอียด",
+                uri: "https://youtube.com/shorts/EwZYNz5mDLo"
+              }
+            }
+          ]
+        }
+      }
+
+    ]
+  }
+};
+// ===============================================
+
+// helper
+function show(id){
+  document.querySelectorAll(".msg").forEach(m => m.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+async function main(){
+  show("loadingMsg");
+
+  try{
+    await liff.init({ liffId: "2008934085-wCFcZ9IU" });
+
+    if(!liff.isLoggedIn()){
+      liff.login();
+      return;
+    }
+
+    if(!liff.isApiAvailable("shareTargetPicker")){
+      throw new Error("ต้องเปิดในแอป LINE เท่านั้น");
+    }
+
+    const res = await liff.shareTargetPicker([flexMessage]);
+
+    if(res){
+      show("successMsg");
+      setTimeout(()=>liff.closeWindow(),2000);
+    }else{
+      liff.closeWindow();
+    }
+
+  }catch(err){
+    document.getElementById("errorMsg").innerHTML =
+      "❌ เกิดข้อผิดพลาด<br>" + err.message;
+    show("errorMsg");
+    setTimeout(()=>liff.closeWindow(),5000);
+  }
+}
+
+main();
+</script>
+</body>
+</html>
